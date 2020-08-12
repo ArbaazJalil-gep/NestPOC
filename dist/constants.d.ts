@@ -1,0 +1,1 @@
+export declare const MONGODB_PROVIDER = "MONGODB_CONNECTION";
