@@ -78,14 +78,16 @@ let UserController = class UserController {
                 },
                 {
                     type: "project",
-                    query: [{ collection: "persons", key: "_id", value: 0 }, { collection: "persons", key: "gender", value: 1 }, { collection: "persons", key: "phone", value: 1 },
-                        ,
-                        { collection: "persons", SpecialOps: "ObjectToArray", alias: "name", key: ["name.first", "name.last"], value: 1 }
+                    query: [{ collection: "persons", key: "_id" }, { collection: "persons", key: "gender" }, { collection: "persons", key: "phone", alias: "mobile" },
+                        { collection: "persons", key: "location.coordinates.longitude" }, { collection: "persons", key: "location.coordinates.latitude" },
+                        { collection: "persons", key: "name.first", alias: "VeryFirstName" }, { collection: "persons", key: "name.last" },
+                        { collection: "persons", key: ["name.first", "name.last"], SpecialOps: "ObjectToArray", alias: "flatNameArray" },
+                        { collection: "persons", key: "name.last", alias: "thelastName" }
                     ]
                 },
                 {
                     type: "sort",
-                    query: [{ key: "name.first", value: 1 }]
+                    query: [{ key: "name.first", value: -1 }]
                 },
             ],
         };
@@ -97,7 +99,7 @@ let UserController = class UserController {
             var projectionsMql = this.userService.projectionBuilder(projections);
             var matchMql = this.userService.matchBuilder(match);
             var sortMql = this.userService.sortBuilder(sort);
-            console.log(sortMql);
+            console.log(JSON.stringify(projectionsMql));
             const result = await this.db.collection(collection).aggregate([
                 matchMql,
                 projectionsMql,

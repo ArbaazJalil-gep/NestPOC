@@ -64,17 +64,25 @@ let UserService = class UserService {
             var comma = self.getSeperator(index, projections.query);
             if (item.SpecialOps == "ObjectToArray") {
                 projectionsStr = self.SplOpsObjectToArray(projectionsStr, item);
+                projectionsStr += comma;
             }
             else {
                 projectionsStr = self.SplOpsNone(projectionsStr, item, comma);
             }
         });
         projectionsStr = `{ "$project":{${projectionsStr}} }`;
+        console.log('===>', projectionsStr);
+        console.log('=========');
         var projectionsObj = JSON.parse(projectionsStr);
         return projectionsObj;
     }
     SplOpsNone(projectionsStr, item, comma) {
-        projectionsStr += `"${item.key}": ${item.value}${comma}`;
+        if (item.alias) {
+            projectionsStr += `"${item.alias}":"$${item.key}"${comma}`;
+        }
+        else {
+            projectionsStr += `"${item.key}":"$${item.key}"${comma}`;
+        }
         return projectionsStr;
     }
     SplOpsObjectToArray(projectionsStr, item) {

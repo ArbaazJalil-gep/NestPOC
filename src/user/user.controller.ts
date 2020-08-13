@@ -23,8 +23,7 @@ export class UserController {
 
   @Get()
   async get(@Query() query) {
-
-
+    
     const schema = {
       type: 'get',
       database: "person",
@@ -71,14 +70,18 @@ export class UserController {
       },
       {
         type: "project",
-        query: [{ collection: "persons", key: "_id", value: 0 }, { collection: "persons", key: "gender", value: 1 }, { collection: "persons", key: "phone", value: 1 }, 
-        //{ collection: "persons", key: "name.first", value: 1 }, { collection: "persons", key: "name.last", value: 1 }
-        ,{ collection: "persons", SpecialOps:"ObjectToArray", alias:"name", key: ["name.first","name.last"], value: 1 }
-      ]
+        query: [{ collection: "persons", key: "_id" }, { collection: "persons", key: "gender" }, { collection: "persons", key: "phone",alias:"mobile" }
+         //,{ collection: "persons", key: "name.first", value: 1 }, { collection: "persons", key: "name.last", value: 1, alias:"lastestName" }
+         ,{ collection: "persons", key: "location.coordinates.longitude" }, { collection: "persons", key: "location.coordinates.latitude" }
+         ,{ collection: "persons", key: "name.first", alias:"VeryFirstName" }, { collection: "persons", key: "name.last" }
+         ,{ collection: "persons", key:  ["name.first","name.last"], SpecialOps:"ObjectToArray", alias:"flatNameArray" }
+          ,{ collection: "persons", key: "name.last", alias:"thelastName" }
+         
+       ]
       },
       {
         type: "sort",
-        query: [{ key: "name.first", value: 1 }]
+        query: [{ key: "name.first", value: -1 }]
       },
 
       ],
@@ -89,13 +92,22 @@ export class UserController {
       var match = schema.Pipes.find(element => element.type === 'match');    
       var sort = schema.Pipes.find(element => element.type === 'sort');    
       var collection = projections.query[0]["collection"];      
-      var projectionsMql = this.userService.projectionBuilder(projections)
+      var projectionsMql = this.userService.projectionBuilder(projections);
       var matchMql =this.userService.matchBuilder(match);     
       var sortMql = this.userService.sortBuilder(sort);
-      console.log(sortMql);
+      console.log(JSON.stringify(projectionsMql));
       const result = await this.db.collection(collection).aggregate([
         matchMql,
-        projectionsMql,
+        projectionsMql
+        // {$project:{"_id":0,"gender":1,"phone":1,"name.first":1,"lastestName":"$name.last", 
+        //coor: [{$convert: { input:"$location.coordinates.longitude", to: "double", onError:0, onNull:0}}]
+            //"longitude":{$convert: { input:"location.coordinates.longitude", to: "double", onError:0, onNull:0}}
+         //, "location.coordinates.longitude" :1
+        //coor: [  "$location.coordinates.longitude" ]
+
+      // }
+      // }
+      ,
         sortMql
       ]).toArray();
       return result;

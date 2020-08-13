@@ -65,6 +65,7 @@ export class UserService {
 //            self["SplOps"+item.SpecialOps](projectionsStr, item, self);
             if (item.SpecialOps == "ObjectToArray") {
                 projectionsStr = self.SplOpsObjectToArray(projectionsStr, item);
+                projectionsStr+=comma;
             }
             else {
                 projectionsStr = self.SplOpsNone(projectionsStr, item, comma);
@@ -72,17 +73,27 @@ export class UserService {
 
         });
         projectionsStr = `{ "$project":{${projectionsStr}} }`;
+        console.log('===>',projectionsStr)
+        console.log('=========')
         var projectionsObj = JSON.parse(projectionsStr)
         return projectionsObj;
     }
 
     private SplOpsNone(projectionsStr: string, item: any, comma: string) {
-        projectionsStr += `"${item.key}": ${item.value}${comma}`;
+        if(item.alias){
+            projectionsStr += `"${item.alias}":"$${item.key}"${comma}`;
+        }else{
+            projectionsStr += `"${item.key}":"$${item.key}"${comma}`;
+            
+        }        
         return projectionsStr;
     }
 
     private SplOpsObjectToArray(projectionsStr: string, item: any) {
         var self = this;
+        // "name.last": "$name.last",
+        // "nameArray":["$name.last","$name.first"]	
+          
         projectionsStr += `"${item.alias}": [`;
         item.key.forEach(function (itm, ind) {
             var comma = self.getSeperator(ind, item.key);
