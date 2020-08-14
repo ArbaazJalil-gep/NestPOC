@@ -10,48 +10,34 @@ exports.UserService = void 0;
 const common_1 = require("@nestjs/common");
 let UserService = class UserService {
     matchBuilder(match) {
-        return JSON.parse(this.builder(match.query, []).join('') + "}");
+        var matchQueryObj = {};
+        matchQueryObj["$match"] = {};
+        matchQueryObj["$match"] = this.builder(match.query, matchQueryObj["$match"]);
+        return matchQueryObj;
     }
-    builder(query, stringArr) {
-        if (stringArr.length == 0)
-            stringArr.push("{ \"$match\":  ");
+    builder(query, matchObj) {
         var self = this;
-        var totalLength = query.length - 1;
         var pos = 0;
-        if (pos === totalLength) {
-            return;
-        }
+        var operandObj;
         query.forEach(function (item, index) {
             if (index == 0) {
-                stringArr.push("{");
-                stringArr.push(self.quotes("$" + item));
-                stringArr.push(":");
-                stringArr.push("[");
+                operandObj = matchObj["$" + item] = [];
                 pos++;
                 return;
             }
             if (Array.isArray(item)) {
                 var childQuery = item;
-                self.builder(childQuery, stringArr);
+                operandObj.push(self.builder(childQuery, {}));
             }
             else {
-                stringArr.push("{");
-                stringArr.push(self.quotes(item.Property));
-                stringArr.push(":");
-                stringArr.push("{");
-                stringArr.push(self.quotes(item.operator));
-                stringArr.push(":");
-                stringArr.push(self.quotes(item.operatorValue));
-                stringArr.push("}");
-                stringArr.push("}");
-                if (index < query.length - 1) {
-                    stringArr.push(",");
-                }
+                var cond = {};
+                cond[item.Property] = {};
+                cond[item.Property][item.operator] = item.operatorValue;
+                operandObj.push(cond);
                 pos++;
             }
         });
-        stringArr.push("]}");
-        return stringArr;
+        return matchObj;
     }
     ;
     quotes(value) {
@@ -61,9 +47,14 @@ let UserService = class UserService {
         var self = this;
         var projectionsStr = "";
         projections.query.forEach(function (item, index) {
+            var _a, _b;
             var comma = self.getSeperator(index, projections.query);
-            if (item.SpecialOps == "ObjectToArray") {
+            if (((_a = item.SpecialOps) === null || _a === void 0 ? void 0 : _a.type) == "ObjectToArray") {
                 projectionsStr = self.SplOpsObjectToArray(projectionsStr, item);
+                projectionsStr += comma;
+            }
+            if (((_b = item.SpecialOps) === null || _b === void 0 ? void 0 : _b.type.toLowerCase()) == "convert") {
+                projectionsStr = self.SplOpsConvert(projectionsStr, item);
                 projectionsStr += comma;
             }
             else {
@@ -71,8 +62,6 @@ let UserService = class UserService {
             }
         });
         projectionsStr = `{ "$project":{${projectionsStr}} }`;
-        console.log('===>', projectionsStr);
-        console.log('=========');
         var projectionsObj = JSON.parse(projectionsStr);
         return projectionsObj;
     }
@@ -83,6 +72,12 @@ let UserService = class UserService {
         else {
             projectionsStr += `"${item.key}":"$${item.key}"${comma}`;
         }
+        return projectionsStr;
+    }
+    SplOpsConvert(projectionsStr, item) {
+        var self = this;
+        projectionsStr += `"${item.alias}": {"$${item.SpecialOps.args.operator}":"$${item.key}"`;
+        projectionsStr += `}`;
         return projectionsStr;
     }
     SplOpsObjectToArray(projectionsStr, item) {

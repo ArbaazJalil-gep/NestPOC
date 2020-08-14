@@ -81,8 +81,7 @@ let UserController = class UserController {
                     query: [{ collection: "persons", key: "_id" }, { collection: "persons", key: "gender" }, { collection: "persons", key: "phone", alias: "mobile" },
                         { collection: "persons", key: "location.coordinates.longitude" }, { collection: "persons", key: "location.coordinates.latitude" },
                         { collection: "persons", key: "name.first", alias: "VeryFirstName" }, { collection: "persons", key: "name.last" },
-                        { collection: "persons", key: ["name.first", "name.last"], SpecialOps: "ObjectToArray", alias: "flatNameArray" },
-                        { collection: "persons", key: "name.last", alias: "thelastName" }
+                        { collection: "persons", key: "cell", alias: 'phoneNumber', SpecialOps: { type: "Convert", args: { operator: "toInt" } } },
                     ]
                 },
                 {
@@ -102,7 +101,6 @@ let UserController = class UserController {
             console.log(JSON.stringify(projectionsMql));
             const result = await this.db.collection(collection).aggregate([
                 matchMql,
-                projectionsMql,
                 sortMql
             ]).toArray();
             return result;

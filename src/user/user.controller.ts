@@ -74,9 +74,9 @@ export class UserController {
          //,{ collection: "persons", key: "name.first", value: 1 }, { collection: "persons", key: "name.last", value: 1, alias:"lastestName" }
          ,{ collection: "persons", key: "location.coordinates.longitude" }, { collection: "persons", key: "location.coordinates.latitude" }
          ,{ collection: "persons", key: "name.first", alias:"VeryFirstName" }, { collection: "persons", key: "name.last" }
-         ,{ collection: "persons", key:  ["name.first","name.last"], SpecialOps:"ObjectToArray", alias:"flatNameArray" }
-          ,{ collection: "persons", key: "name.last", alias:"thelastName" }
-         
+         //,{ collection: "persons", key:  ["name.first","name.last"], SpecialOps:{type:"ObjectToArray",args:{}}, alias:"flatNameArray" }
+        //  ,{ collection: "persons", key: "name.last", alias:"thelastName" }
+         ,{ collection: "persons", key: "cell", alias:'phoneNumber',SpecialOps:{type:"Convert",args:{operator:"toInt"}} },
        ]
       },
       {
@@ -97,8 +97,8 @@ export class UserController {
       var sortMql = this.userService.sortBuilder(sort);
       console.log(JSON.stringify(projectionsMql));
       const result = await this.db.collection(collection).aggregate([
-        matchMql,
-        projectionsMql
+        matchMql
+        //,projectionsMql
         // {$project:{"_id":0,"gender":1,"phone":1,"name.first":1,"lastestName":"$name.last", 
         //coor: [{$convert: { input:"$location.coordinates.longitude", to: "double", onError:0, onNull:0}}]
             //"longitude":{$convert: { input:"location.coordinates.longitude", to: "double", onError:0, onNull:0}}
