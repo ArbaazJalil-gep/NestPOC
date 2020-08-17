@@ -3,6 +3,10 @@ import { Injectable } from '@nestjs/common';
 @Injectable()
 export class UserService {
 
+aggregationBuilder(schema){
+    var projections = schema.Pipes.find(element => element.type === 'project');
+    var match = schema.Pipes.find(element => element.type === 'match');
+}
 
     matchBuilder(match) {
         var matchQueryObj = {}
@@ -40,70 +44,52 @@ export class UserService {
     }
 
     projectionBuilder(projections) {
+        var projectionObj={"$project":{}}
         var self = this;
-        var projectionsStr = ""
+      
         projections.query.forEach(function (item, index) {
-            var comma = self.getSeperator(index, projections.query);
-            
-            if (item.SpecialOps?.type == "ObjectToArray") {
-                projectionsStr = self.SplOpsObjectToArray(projectionsStr, item);
-                projectionsStr += comma;
+           
+            if('SpecialOps' in item){
+            if (item.SpecialOps.type == "ObjectToArray") {
+                self.SplOpsObjectToArray(projectionObj["$project"],item);
+               
             }
-            if (item.SpecialOps?.type.toLowerCase() == "convert") {
-                projectionsStr = self.SplOpsConvert(projectionsStr, item);
-                projectionsStr += comma;
+            if (item.SpecialOps.type.toLowerCase() == "convert") {
+                self.SplOpsConvert( projectionObj.$project,item);
+            }
             }
             else {
-                projectionsStr = self.SplOpsNone(projectionsStr, item, comma);
+                 self.SplOpsNone( projectionObj.$project,item);
             }
-
         });
-        projectionsStr = `{ "$project":{${projectionsStr}} }`;
-
-        var projectionsObj = JSON.parse(projectionsStr)
-        return projectionsObj;
+        
+        return projectionObj;
     }
 
-    private SplOpsNone(projectionsStr: string, item: any, comma: string) {
+    private SplOpsNone(projectionObj: {}, item: any) {
         if (item.alias) {
-            projectionsStr += `"${item.alias}":"$${item.key}"${comma}`;
+          projectionObj[item.alias]= '$'+item.key;
+            
         } else {
-            projectionsStr += `"${item.key}":"$${item.key}"${comma}`;
+          projectionObj[item.key]= '$'+item.key;
         }
-        return projectionsStr;
-    }
-
-    private SplOpsConvert(projectionsStr: string, item: any) {
-        /*
-          alias: {
-              "$toDecimal": "$location.coordinates.latitude"
-          }
-          */
-        var self = this;
-
-        // var obj = {};
-        // obj[item.alias] ={};
-        // obj[item.alias]["$"+item.SpecialOps.args.operator]="$"+item.key;
-        // console.log(projectionsStr)
-        // projectionsStr +=JSON.stringify(obj)
-        // console.log(';;;;;')
-        // console.log(obj)
-
-        projectionsStr += `"${item.alias}": {"$${item.SpecialOps.args.operator}":"$${item.key}"`;
-        projectionsStr += `}`;
-        return projectionsStr;
+        return projectionObj;
     }
 
 
-    private SplOpsObjectToArray(projectionsStr: string, item: any) {
-        var self = this;
-        projectionsStr += `"${item.alias}": [`;
+    private SplOpsConvert(projectionObj: {}, item: any) {
+        projectionObj[item.alias]={};
+        projectionObj[item.alias][item.SpecialOps.args.operator]= "$"+item.key;
+        return projectionObj;
+    }
+
+
+    private SplOpsObjectToArray(projectionObj: {}, item: any) {
+        projectionObj[item.alias]=[];
         item.key.forEach(function (itm, ind) {
-            var comma = self.getSeperator(ind, item.key);
-            projectionsStr += `"$${itm}"${comma}`;
+           projectionObj[item.alias].push(itm);
         });
-        projectionsStr += `]`;
-        return projectionsStr;
+        return projectionObj;
     }
 
     getSeperator(index: any, arr: []) {
@@ -118,17 +104,13 @@ export class UserService {
     }
 
     sortBuilder(sort) {
-        var sortStr = ""
+        var sortObj={"$sort":{}}
+        var self = this;
+      
         sort.query.forEach(function (item, index) {
-            if (index < sort.query.length - 1) {
-                sortStr += `"${item.key}": ${item.value},`;
-            }
-            else {
-                sortStr += `"${item.key}": ${item.value}`;
-            }
+            sortObj["$sort"][`${item.key}`]=  item.value;
         });
-        sortStr = `{ "$sort":{${sortStr}} }`;
-        var sortObj = JSON.parse(sortStr)
+        
         return sortObj;
     }
 

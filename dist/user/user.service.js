@@ -9,6 +9,10 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.UserService = void 0;
 const common_1 = require("@nestjs/common");
 let UserService = class UserService {
+    aggregationBuilder(schema) {
+        var projections = schema.Pipes.find(element => element.type === 'project');
+        var match = schema.Pipes.find(element => element.type === 'match');
+    }
     matchBuilder(match) {
         var matchQueryObj = {};
         matchQueryObj["$match"] = {};
@@ -44,51 +48,43 @@ let UserService = class UserService {
         return `"${value}"`;
     }
     projectionBuilder(projections) {
+        var projectionObj = { "$project": {} };
         var self = this;
-        var projectionsStr = "";
         projections.query.forEach(function (item, index) {
-            var _a, _b;
-            var comma = self.getSeperator(index, projections.query);
-            if (((_a = item.SpecialOps) === null || _a === void 0 ? void 0 : _a.type) == "ObjectToArray") {
-                projectionsStr = self.SplOpsObjectToArray(projectionsStr, item);
-                projectionsStr += comma;
-            }
-            if (((_b = item.SpecialOps) === null || _b === void 0 ? void 0 : _b.type.toLowerCase()) == "convert") {
-                projectionsStr = self.SplOpsConvert(projectionsStr, item);
-                projectionsStr += comma;
+            if ('SpecialOps' in item) {
+                if (item.SpecialOps.type == "ObjectToArray") {
+                    self.SplOpsObjectToArray(projectionObj["$project"], item);
+                }
+                if (item.SpecialOps.type.toLowerCase() == "convert") {
+                    self.SplOpsConvert(projectionObj.$project, item);
+                }
             }
             else {
-                projectionsStr = self.SplOpsNone(projectionsStr, item, comma);
+                self.SplOpsNone(projectionObj.$project, item);
             }
         });
-        projectionsStr = `{ "$project":{${projectionsStr}} }`;
-        var projectionsObj = JSON.parse(projectionsStr);
-        return projectionsObj;
+        return projectionObj;
     }
-    SplOpsNone(projectionsStr, item, comma) {
+    SplOpsNone(projectionObj, item) {
         if (item.alias) {
-            projectionsStr += `"${item.alias}":"$${item.key}"${comma}`;
+            projectionObj[item.alias] = '$' + item.key;
         }
         else {
-            projectionsStr += `"${item.key}":"$${item.key}"${comma}`;
+            projectionObj[item.key] = '$' + item.key;
         }
-        return projectionsStr;
+        return projectionObj;
     }
-    SplOpsConvert(projectionsStr, item) {
-        var self = this;
-        projectionsStr += `"${item.alias}": {"$${item.SpecialOps.args.operator}":"$${item.key}"`;
-        projectionsStr += `}`;
-        return projectionsStr;
+    SplOpsConvert(projectionObj, item) {
+        projectionObj[item.alias] = {};
+        projectionObj[item.alias][item.SpecialOps.args.operator] = "$" + item.key;
+        return projectionObj;
     }
-    SplOpsObjectToArray(projectionsStr, item) {
-        var self = this;
-        projectionsStr += `"${item.alias}": [`;
+    SplOpsObjectToArray(projectionObj, item) {
+        projectionObj[item.alias] = [];
         item.key.forEach(function (itm, ind) {
-            var comma = self.getSeperator(ind, item.key);
-            projectionsStr += `"$${itm}"${comma}`;
+            projectionObj[item.alias].push(itm);
         });
-        projectionsStr += `]`;
-        return projectionsStr;
+        return projectionObj;
     }
     getSeperator(index, arr) {
         var comma = "";
@@ -101,17 +97,11 @@ let UserService = class UserService {
         return comma;
     }
     sortBuilder(sort) {
-        var sortStr = "";
+        var sortObj = { "$sort": {} };
+        var self = this;
         sort.query.forEach(function (item, index) {
-            if (index < sort.query.length - 1) {
-                sortStr += `"${item.key}": ${item.value},`;
-            }
-            else {
-                sortStr += `"${item.key}": ${item.value}`;
-            }
+            sortObj["$sort"][`${item.key}`] = item.value;
         });
-        sortStr = `{ "$sort":{${sortStr}} }`;
-        var sortObj = JSON.parse(sortStr);
         return sortObj;
     }
 };

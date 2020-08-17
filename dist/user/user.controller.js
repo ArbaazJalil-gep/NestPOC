@@ -78,19 +78,23 @@ let UserController = class UserController {
                 },
                 {
                     type: "project",
-                    query: [{ collection: "persons", key: "_id" }, { collection: "persons", key: "gender" }, { collection: "persons", key: "phone", alias: "mobile" },
+                    query: [
+                        { collection: "persons", key: "_id" },
+                        { collection: "persons", key: "gender" },
+                        { collection: "persons", key: "phone", alias: "mobile" },
                         { collection: "persons", key: "location.coordinates.longitude" }, { collection: "persons", key: "location.coordinates.latitude" },
                         { collection: "persons", key: "name.first", alias: "VeryFirstName" }, { collection: "persons", key: "name.last" },
-                        { collection: "persons", key: "cell", alias: 'phoneNumber', SpecialOps: { type: "Convert", args: { operator: "toInt" } } },
+                        { collection: "persons", key: "cell", alias: 'phoneNumber', SpecialOps: { type: "Convert", args: { operator: "toString" } } },
                     ]
                 },
                 {
                     type: "sort",
-                    query: [{ key: "name.first", value: -1 }]
+                    query: [{ key: "VeryFirstName", value: 1 }]
                 },
             ],
         };
         if (schema.type === 'get') {
+            var mquery = this.userService.aggregationBuilder(schema);
             var projections = schema.Pipes.find(element => element.type === 'project');
             var match = schema.Pipes.find(element => element.type === 'match');
             var sort = schema.Pipes.find(element => element.type === 'sort');
@@ -98,11 +102,11 @@ let UserController = class UserController {
             var projectionsMql = this.userService.projectionBuilder(projections);
             var matchMql = this.userService.matchBuilder(match);
             var sortMql = this.userService.sortBuilder(sort);
-            console.log(JSON.stringify(projectionsMql));
-            const result = await this.db.collection(collection).aggregate([
-                matchMql,
-                sortMql
-            ]).toArray();
+            var mongoQuery = [];
+            mongoQuery.push(matchMql);
+            mongoQuery.push(projectionsMql);
+            mongoQuery.push(sortMql);
+            const result = await this.db.collection(collection).aggregate(mongoQuery).toArray();
             return result;
         }
     }

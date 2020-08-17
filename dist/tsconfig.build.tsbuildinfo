@@ -1472,12 +1472,12 @@
         "affectsGlobalScope": false
       },
       "../src/user/user.service.ts": {
-        "version": "330c79a893ff5112d973299632c31262e886510c6a469d6b4d1d7b86175269b6",
-        "signature": "55422c139573202329c28c9ee22ce7d732368899a0e105072f4b3d956bb96fd6",
+        "version": "836d5e56c5fa2d23889de30146990300a815f88d3c235221b65fd7a92d4de7b8",
+        "signature": "2aebd2dd898a077023af5f7f0bf2a8a65e153267886e5cd78236de30c641a34b",
         "affectsGlobalScope": false
       },
       "../src/user/user.controller.ts": {
-        "version": "f792e48ef6c4823f6c65c36e6e2fb9b9ef883728d948b6732900de5e6c47fcdb",
+        "version": "89d478475b67b3be2f34004cb8c2737c7341f32b58eb4cc667b3b2acc3f9bb7a",
         "signature": "cf9352381f3f40f5193755ea15add62ab0e62dc98d4c0efec6150f9ebffda7b4",
         "affectsGlobalScope": false
       },
