@@ -9,7 +9,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.UserModule = void 0;
 const common_1 = require("@nestjs/common");
 const user_controller_1 = require("./user.controller");
-const user_service_1 = require("./user.service");
+const QueryBuilderService_1 = require("./QueryBuilderService");
 const mongo_db_module_1 = require("../mongo-db/mongo-db.module");
 let UserModule = class UserModule {
 };
@@ -17,7 +17,7 @@ UserModule = __decorate([
     common_1.Module({
         imports: [mongo_db_module_1.MongoDbModule],
         controllers: [user_controller_1.UserController],
-        providers: [user_service_1.UserService]
+        providers: [QueryBuilderService_1.QueryBuilderService]
     })
 ], UserModule);
 exports.UserModule = UserModule;

@@ -1471,23 +1471,38 @@
         "signature": "46453f63ea6f9197248ffb80839f423b14f8d8d7dbb2c4902b8797b44d259859",
         "affectsGlobalScope": false
       },
-      "../src/user/user.service.ts": {
-        "version": "836d5e56c5fa2d23889de30146990300a815f88d3c235221b65fd7a92d4de7b8",
-        "signature": "2aebd2dd898a077023af5f7f0bf2a8a65e153267886e5cd78236de30c641a34b",
+      "../src/user/querybuilderservice.ts": {
+        "version": "b0d817e9035f42fd0f1e7b212c287d51f8cf17d863492bc4c1b768bbac421c0a",
+        "signature": "08aa8bba8d705659f7f796d51280a582e7d70fcee0128088e0c955e01f41738c",
         "affectsGlobalScope": false
       },
-      "../src/user/user.controller.ts": {
-        "version": "89d478475b67b3be2f34004cb8c2737c7341f32b58eb4cc667b3b2acc3f9bb7a",
-        "signature": "cf9352381f3f40f5193755ea15add62ab0e62dc98d4c0efec6150f9ebffda7b4",
+      "../node_modules/@types/cookiejar/index.d.ts": {
+        "version": "16b7fb094ffaa5d270f934e7406e8baee2f8245cfabf6dcc20f693389f005f56",
+        "signature": "16b7fb094ffaa5d270f934e7406e8baee2f8245cfabf6dcc20f693389f005f56",
         "affectsGlobalScope": false
       },
-      "../src/user/user.module.ts": {
-        "version": "ec44a3fcac55c0a0df48b105f76cef2f57cbec5b3c9426cf585e84a9520fe66f",
-        "signature": "9e36626cb39f17790cf2403e2e54d8a74542da63e2a49aba7061133a1af26dcd",
+      "../node_modules/@types/superagent/index.d.ts": {
+        "version": "54290ac8d5f9b94a669980e6acb63b43b4df6138caf2fc3cdcb8e99553f1583a",
+        "signature": "54290ac8d5f9b94a669980e6acb63b43b4df6138caf2fc3cdcb8e99553f1583a",
+        "affectsGlobalScope": false
+      },
+      "../node_modules/@types/supertest/index.d.ts": {
+        "version": "e6540dcaa31aadbd070bea91d31c387c3e03baf78ea56420e706ae77660ae45a",
+        "signature": "e6540dcaa31aadbd070bea91d31c387c3e03baf78ea56420e706ae77660ae45a",
+        "affectsGlobalScope": false
+      },
+      "../src/user/querybuilder.controller.ts": {
+        "version": "58c6ecedc5e86fe7b74d438fec6c1517c6295306d5ddc8c17e1d65acbf6e7145",
+        "signature": "7a0f57169478199e4b2e28827b52f4c74580264a5078aa51a436f39c86c182da",
+        "affectsGlobalScope": false
+      },
+      "../src/user/querybuilder.module.ts": {
+        "version": "b3bcea193a6f22258c72134944c97f2f8061d76d9ebabcabf0b1440dddfd6f64",
+        "signature": "5c53e1edb66756c47b256b5f42762f19c77eb6eab5c5110bc64c018687fc8f09",
         "affectsGlobalScope": false
       },
       "../src/app.module.ts": {
-        "version": "69ccfeced7d5f5d553f953de5a91fdac8e7e60d00ddcdd01bb4739010fd79b84",
+        "version": "86b4a7207130147227f5b3b812ff41c591b9a08a557b68f634a01f80107f6285",
         "signature": "9fc7f7b6ad854404973b8cba8e6d883f758237991968e9a3965d716d46f1da88",
         "affectsGlobalScope": false
       },
@@ -1726,11 +1741,6 @@
         "signature": "f0cb4b3ab88193e3e51e9e2622e4c375955003f1f81239d72c5b7a95415dad3e",
         "affectsGlobalScope": false
       },
-      "../node_modules/@types/cookiejar/index.d.ts": {
-        "version": "16b7fb094ffaa5d270f934e7406e8baee2f8245cfabf6dcc20f693389f005f56",
-        "signature": "16b7fb094ffaa5d270f934e7406e8baee2f8245cfabf6dcc20f693389f005f56",
-        "affectsGlobalScope": false
-      },
       "../node_modules/@types/eslint-visitor-keys/index.d.ts": {
         "version": "725d9be2fd48440256f4deb00649adffdbc5ecd282b09e89d4e200663792c34c",
         "signature": "725d9be2fd48440256f4deb00649adffdbc5ecd282b09e89d4e200663792c34c",
@@ -1834,16 +1844,6 @@
       "../node_modules/@types/stack-utils/index.d.ts": {
         "version": "41422586881bcd739b4e62d9b91cd29909f8572aa3e3cdf316b7c50f14708d49",
         "signature": "41422586881bcd739b4e62d9b91cd29909f8572aa3e3cdf316b7c50f14708d49",
-        "affectsGlobalScope": false
-      },
-      "../node_modules/@types/superagent/index.d.ts": {
-        "version": "54290ac8d5f9b94a669980e6acb63b43b4df6138caf2fc3cdcb8e99553f1583a",
-        "signature": "54290ac8d5f9b94a669980e6acb63b43b4df6138caf2fc3cdcb8e99553f1583a",
-        "affectsGlobalScope": false
-      },
-      "../node_modules/@types/supertest/index.d.ts": {
-        "version": "e6540dcaa31aadbd070bea91d31c387c3e03baf78ea56420e706ae77660ae45a",
-        "signature": "e6540dcaa31aadbd070bea91d31c387c3e03baf78ea56420e706ae77660ae45a",
         "affectsGlobalScope": false
       },
       "../node_modules/@types/tapable/index.d.ts": {
@@ -5203,7 +5203,7 @@
         "../src/app.controller.ts",
         "../src/app.service.ts",
         "../src/mongo-db/mongo-db.module.ts",
-        "../src/user/user.module.ts"
+        "../src/user/querybuilder.module.ts"
       ],
       "../src/app.service.ts": [
         "../node_modules/@nestjs/common/index.d.ts",
@@ -5262,7 +5262,7 @@
         "../node_modules/@types/node/util.d.ts",
         "../src/constants.ts"
       ],
-      "../src/user/user.controller.ts": [
+      "../src/user/querybuilder.controller.ts": [
         "../node_modules/@nestjs/common/index.d.ts",
         "../node_modules/@types/express/index.d.ts",
         "../node_modules/@types/graceful-fs/index.d.ts",
@@ -5270,10 +5270,11 @@
         "../node_modules/@types/node/ts3.2/fs.d.ts",
         "../node_modules/@types/node/ts3.2/util.d.ts",
         "../node_modules/@types/node/util.d.ts",
+        "../node_modules/@types/supertest/index.d.ts",
         "../src/constants.ts",
-        "../src/user/user.service.ts"
+        "../src/user/querybuilderservice.ts"
       ],
-      "../src/user/user.module.ts": [
+      "../src/user/querybuilder.module.ts": [
         "../node_modules/@nestjs/common/index.d.ts",
         "../node_modules/@types/graceful-fs/index.d.ts",
         "../node_modules/@types/node/fs.d.ts",
@@ -5281,10 +5282,10 @@
         "../node_modules/@types/node/ts3.2/util.d.ts",
         "../node_modules/@types/node/util.d.ts",
         "../src/mongo-db/mongo-db.module.ts",
-        "../src/user/user.controller.ts",
-        "../src/user/user.service.ts"
+        "../src/user/querybuilder.controller.ts",
+        "../src/user/querybuilderservice.ts"
       ],
-      "../src/user/user.service.ts": [
+      "../src/user/querybuilderservice.ts": [
         "../node_modules/@nestjs/common/index.d.ts",
         "../node_modules/@types/graceful-fs/index.d.ts",
         "../node_modules/@types/node/fs.d.ts",
@@ -8569,9 +8570,9 @@
       "../src/app.controller.ts": [
         "../src/app.service.ts"
       ],
-      "../src/user/user.controller.ts": [
+      "../src/user/querybuilder.controller.ts": [
         "../node_modules/@types/express/index.d.ts",
-        "../src/user/user.service.ts"
+        "../src/user/querybuilderservice.ts"
       ]
     },
     "semanticDiagnosticsPerFile": [
@@ -8951,9 +8952,9 @@
       "../src/mongo-db/mongo-db.module.ts",
       "../src/mongo-db/mongo-db.service.ts",
       "../src/mongo-db/mongodb.provider.ts",
-      "../src/user/user.controller.ts",
-      "../src/user/user.module.ts",
-      "../src/user/user.service.ts"
+      "../src/user/querybuilder.controller.ts",
+      "../src/user/querybuilder.module.ts",
+      "../src/user/querybuilderservice.ts"
     ]
   },
   "version": "3.9.7"

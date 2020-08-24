@@ -12,11 +12,11 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
     return function (target, key) { decorator(target, key, paramIndex); }
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.UserController = void 0;
+exports.QueryBuilderController = void 0;
 const common_1 = require("@nestjs/common");
 const constants_1 = require("../constants");
 const QueryBuilderService_1 = require("./QueryBuilderService");
-let UserController = class UserController {
+let QueryBuilderController = class QueryBuilderController {
     constructor(db, userService) {
         this.db = db;
         this.userService = userService;
@@ -128,18 +128,18 @@ __decorate([
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object, Object]),
     __metadata("design:returntype", Promise)
-], UserController.prototype, "create", null);
+], QueryBuilderController.prototype, "create", null);
 __decorate([
     common_1.Get(),
     __param(0, common_1.Query()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", Promise)
-], UserController.prototype, "get", null);
-UserController = __decorate([
+], QueryBuilderController.prototype, "get", null);
+QueryBuilderController = __decorate([
     common_1.Controller('user'),
     __param(0, common_1.Inject(constants_1.MONGODB_PROVIDER)),
     __metadata("design:paramtypes", [Object, QueryBuilderService_1.QueryBuilderService])
-], UserController);
-exports.UserController = UserController;
-//# sourceMappingURL=user.controller.js.map
+], QueryBuilderController);
+exports.QueryBuilderController = QueryBuilderController;
+//# sourceMappingURL=QueryBuilder.controller.js.map

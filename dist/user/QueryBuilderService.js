@@ -6,10 +6,10 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.UserService = void 0;
+exports.QueryBuilderService = void 0;
 const common_1 = require("@nestjs/common");
 let ObjectId = require('mongodb').ObjectID;
-let UserService = class UserService {
+let QueryBuilderService = class QueryBuilderService {
     aggregationBuilder(schema) {
         let self = this;
         let aggregationObj = [];
@@ -172,8 +172,8 @@ let UserService = class UserService {
         return groupObj;
     }
 };
-UserService = __decorate([
+QueryBuilderService = __decorate([
     common_1.Injectable()
-], UserService);
-exports.UserService = UserService;
-//# sourceMappingURL=user.service.js.map
+], QueryBuilderService);
+exports.QueryBuilderService = QueryBuilderService;
+//# sourceMappingURL=QueryBuilderService.js.map

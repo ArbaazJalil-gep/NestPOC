@@ -1,4 +1,4 @@
-export declare class UserService {
+export declare class QueryBuilderService {
     aggregationBuilder(schema: any): any[];
     matchBuilder(match: any): {};
     builder(query: any, matchObj: any): any;

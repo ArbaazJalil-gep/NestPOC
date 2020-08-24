@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import { QueryBuilderService } from './QueryBuilderService';
-export declare class UserController {
+export declare class QueryBuilderController {
     private readonly db;
     private readonly userService;
     constructor(db: any, userService: QueryBuilderService);

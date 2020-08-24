@@ -6,20 +6,19 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.AppModule = void 0;
+exports.QueryBuilderModule = void 0;
 const common_1 = require("@nestjs/common");
-const app_controller_1 = require("./app.controller");
-const app_service_1 = require("./app.service");
-const mongo_db_module_1 = require("./mongo-db/mongo-db.module");
-const QueryBuilder_module_1 = require("./user/QueryBuilder.module");
-let AppModule = class AppModule {
+const QueryBuilder_controller_1 = require("./QueryBuilder.controller");
+const QueryBuilderService_1 = require("./QueryBuilderService");
+const mongo_db_module_1 = require("../mongo-db/mongo-db.module");
+let QueryBuilderModule = class QueryBuilderModule {
 };
-AppModule = __decorate([
+QueryBuilderModule = __decorate([
     common_1.Module({
-        imports: [mongo_db_module_1.MongoDbModule, QueryBuilder_module_1.QueryBuilderModule],
-        controllers: [app_controller_1.AppController],
-        providers: [app_service_1.AppService],
+        imports: [mongo_db_module_1.MongoDbModule],
+        controllers: [QueryBuilder_controller_1.QueryBuilderController],
+        providers: [QueryBuilderService_1.QueryBuilderService]
     })
-], AppModule);
-exports.AppModule = AppModule;
-//# sourceMappingURL=app.module.js.map
+], QueryBuilderModule);
+exports.QueryBuilderModule = QueryBuilderModule;
+//# sourceMappingURL=QueryBuilder.module.js.map

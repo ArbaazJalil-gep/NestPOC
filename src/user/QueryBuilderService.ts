@@ -1,19 +1,16 @@
-"use strict";
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.UserService = void 0;
-const common_1 = require("@nestjs/common");
+import { Injectable } from '@nestjs/common';
 let ObjectId = require('mongodb').ObjectID;
-let UserService = class UserService {
+
+@Injectable()
+export class QueryBuilderService {
+
     aggregationBuilder(schema) {
         let self = this;
         let aggregationObj = [];
+
+
         aggregationObj.push(self.matchBuilder(schema.Pipes.find(element => element.type === 'match')));
+
         let facetObj = {
             "$facet": {
                 "totalCount": [
@@ -24,7 +21,9 @@ let UserService = class UserService {
             }
         };
         aggregationObj.push(facetObj);
+
         schema.Pipes.forEach((item, index) => {
+
             switch (item.type) {
                 case "project":
                     aggregationObj[1]["$facet"]["data"].push(self.projectionBuilder(item));
@@ -45,11 +44,13 @@ let UserService = class UserService {
         });
         return aggregationObj;
     }
+
     matchBuilder(match) {
-        let matchQueryObj = {};
-        matchQueryObj["$match"] = this.builder(match.query, {});
+        let matchQueryObj = {}
+        matchQueryObj["$match"] = this.builder(match.query, {})
         return matchQueryObj;
     }
+
     builder(query, matchObj) {
         let self = this;
         let pos = 0;
@@ -57,7 +58,7 @@ let UserService = class UserService {
         query.forEach(function (item, index) {
             if (index == 0) {
                 operandObj = matchObj["$" + item] = [];
-                pos++;
+                pos++
                 return;
             }
             if (Array.isArray(item)) {
@@ -67,28 +68,32 @@ let UserService = class UserService {
             else {
                 let cond = {};
                 cond["$expr"] = {};
-                cond["$expr"][item.operator] = [];
+                cond["$expr"][item.operator] = []; //item.opeatorValue should be an array
                 cond["$expr"][item.operator].push("$" + item.Property);
+
                 if (item.Property.startsWith("_")) {
-                    cond["$expr"][item.operator].push({ "$toObjectId": item.operatorValue });
+                    cond["$expr"][item.operator].push({ "$toObjectId": item.operatorValue })
+                } else {
+                    cond["$expr"][item.operator].push(...item.operatorValue)
                 }
-                else {
-                    cond["$expr"][item.operator].push(...item.operatorValue);
-                }
-                operandObj.push(cond);
+
+                operandObj.push(cond)
                 pos++;
             }
         });
         return matchObj;
-    }
-    ;
-    quotes(value) {
+    };
+
+    quotes(value): string {
         return `"${value}"`;
     }
+
     projectionBuilder(projections) {
-        let projectionObj = { "$project": {} };
+        let projectionObj = { "$project": {} }
         let self = this;
+
         projections.query.forEach(function (item, index) {
+
             if ('SpecialOps' in item) {
                 if (item.SpecialOps.type == "ObjectToArray") {
                     self.SplOpsObjectToArray(projectionObj["$project"], item);
@@ -101,30 +106,35 @@ let UserService = class UserService {
                 self.SplOpsNone(projectionObj.$project, item);
             }
         });
+
         return projectionObj;
     }
-    SplOpsNone(projectionObj, item) {
+
+    private SplOpsNone(projectionObj: {}, item: any) {
         if (item.alias) {
             projectionObj[item.alias] = '$' + item.key;
-        }
-        else {
+
+        } else {
             projectionObj[item.key] = '$' + item.key;
         }
         return projectionObj;
     }
-    SplOpsConvert(projectionObj, item) {
+
+    private SplOpsConvert(projectionObj: {}, item: any) {
         projectionObj[item.alias] = {};
         projectionObj[item.alias][item.SpecialOps.args.operator] = "$" + item.key;
         return projectionObj;
     }
-    SplOpsObjectToArray(projectionObj, item) {
+
+    private SplOpsObjectToArray(projectionObj: {}, item: any) {
         projectionObj[item.alias] = [];
         item.key.forEach(function (itm, ind) {
             projectionObj[item.alias].push(itm);
         });
         return projectionObj;
     }
-    getSeperator(index, arr) {
+
+    getSeperator(index: any, arr: []) {
         let comma = "";
         if (index < arr.length - 1) {
             comma = ",";
@@ -134,14 +144,17 @@ let UserService = class UserService {
         }
         return comma;
     }
+
     sortBuilder(sort) {
-        let sortObj = { "$sort": {} };
+        let sortObj = { "$sort": {} }
         let self = this;
+
         sort.query.forEach(function (item, index) {
             sortObj["$sort"][`${item.key}`] = item.value;
         });
         return sortObj;
     }
+
     paginationBuilder(pagination) {
         let skipObj = {};
         let limitObj = {};
@@ -150,30 +163,27 @@ let UserService = class UserService {
         let pageObj = [skipObj, limitObj];
         return pageObj;
     }
+
     lookupBuilder(lookup) {
         let lookupObj = {};
         lookupObj["$lookup"] = lookup.query;
         return lookupObj;
     }
+
     groupBuilder(group) {
         let groupObj = {};
         let obj = {};
-        group.query._id.forEach(element => {
-            obj[element.alias] = "$" + element.key;
-        });
-        let x = {};
-        x["_id"] = obj;
-        groupObj["$group"] = x;
+            group.query._id.forEach(element => {               
+                obj[element.alias] = "$"+element.key;
+            });
+          let x={ };
+          x["_id"]=obj ;
+          groupObj["$group"] = x;
         group.query.accumulators.forEach(element => {
-            let obj1 = {};
-            obj1["$" + element.accumulator] = element.accumulatorValue;
+            let obj1 = {}
+            obj1["$"+element.accumulator] = element.accumulatorValue;
             groupObj["$group"][element.alias] = obj1;
         });
         return groupObj;
     }
-};
-UserService = __decorate([
-    common_1.Injectable()
-], UserService);
-exports.UserService = UserService;
-//# sourceMappingURL=user.service.js.map
+}
