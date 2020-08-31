@@ -1491,13 +1491,18 @@
         "signature": "e6540dcaa31aadbd070bea91d31c387c3e03baf78ea56420e706ae77660ae45a",
         "affectsGlobalScope": false
       },
+      "../src/user/update-builder/update-builder.service.ts": {
+        "version": "3e442c1316d31f511c28c26b91a19d049523761a9019d9f97f63abb37b5a18ca",
+        "signature": "85184e31282dc97dbd631b60da29dd6acf58a69ec1911685a223f75ba21ca61b",
+        "affectsGlobalScope": false
+      },
       "../src/user/querybuilder.controller.ts": {
-        "version": "58c6ecedc5e86fe7b74d438fec6c1517c6295306d5ddc8c17e1d65acbf6e7145",
-        "signature": "7a0f57169478199e4b2e28827b52f4c74580264a5078aa51a436f39c86c182da",
+        "version": "0498460e40b0ca4904d2d58a0ec03a0d7908018109e6b022f60e87680e8a412d",
+        "signature": "131c4df650d6346f304c87cfe41fe3fb083720214c810f0f01519ef3c7927849",
         "affectsGlobalScope": false
       },
       "../src/user/querybuilder.module.ts": {
-        "version": "b3bcea193a6f22258c72134944c97f2f8061d76d9ebabcabf0b1440dddfd6f64",
+        "version": "fdcbe19928fad1ffddfacdf1d72f6fe5b8250ece056336e1807ae2ee100f6a23",
         "signature": "5c53e1edb66756c47b256b5f42762f19c77eb6eab5c5110bc64c018687fc8f09",
         "affectsGlobalScope": false
       },
@@ -5272,7 +5277,8 @@
         "../node_modules/@types/node/util.d.ts",
         "../node_modules/@types/supertest/index.d.ts",
         "../src/constants.ts",
-        "../src/user/querybuilderservice.ts"
+        "../src/user/querybuilderservice.ts",
+        "../src/user/update-builder/update-builder.service.ts"
       ],
       "../src/user/querybuilder.module.ts": [
         "../node_modules/@nestjs/common/index.d.ts",
@@ -5283,9 +5289,18 @@
         "../node_modules/@types/node/util.d.ts",
         "../src/mongo-db/mongo-db.module.ts",
         "../src/user/querybuilder.controller.ts",
-        "../src/user/querybuilderservice.ts"
+        "../src/user/querybuilderservice.ts",
+        "../src/user/update-builder/update-builder.service.ts"
       ],
       "../src/user/querybuilderservice.ts": [
+        "../node_modules/@nestjs/common/index.d.ts",
+        "../node_modules/@types/graceful-fs/index.d.ts",
+        "../node_modules/@types/node/fs.d.ts",
+        "../node_modules/@types/node/ts3.2/fs.d.ts",
+        "../node_modules/@types/node/ts3.2/util.d.ts",
+        "../node_modules/@types/node/util.d.ts"
+      ],
+      "../src/user/update-builder/update-builder.service.ts": [
         "../node_modules/@nestjs/common/index.d.ts",
         "../node_modules/@types/graceful-fs/index.d.ts",
         "../node_modules/@types/node/fs.d.ts",
@@ -8572,7 +8587,8 @@
       ],
       "../src/user/querybuilder.controller.ts": [
         "../node_modules/@types/express/index.d.ts",
-        "../src/user/querybuilderservice.ts"
+        "../src/user/querybuilderservice.ts",
+        "../src/user/update-builder/update-builder.service.ts"
       ]
     },
     "semanticDiagnosticsPerFile": [
@@ -8954,7 +8970,8 @@
       "../src/mongo-db/mongodb.provider.ts",
       "../src/user/querybuilder.controller.ts",
       "../src/user/querybuilder.module.ts",
-      "../src/user/querybuilderservice.ts"
+      "../src/user/querybuilderservice.ts",
+      "../src/user/update-builder/update-builder.service.ts"
     ]
   },
   "version": "3.9.7"

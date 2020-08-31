@@ -11,13 +11,14 @@ const common_1 = require("@nestjs/common");
 const QueryBuilder_controller_1 = require("./QueryBuilder.controller");
 const QueryBuilderService_1 = require("./QueryBuilderService");
 const mongo_db_module_1 = require("../mongo-db/mongo-db.module");
+const update_builder_service_1 = require("./update-builder/update-builder.service");
 let QueryBuilderModule = class QueryBuilderModule {
 };
 QueryBuilderModule = __decorate([
     common_1.Module({
         imports: [mongo_db_module_1.MongoDbModule],
         controllers: [QueryBuilder_controller_1.QueryBuilderController],
-        providers: [QueryBuilderService_1.QueryBuilderService]
+        providers: [QueryBuilderService_1.QueryBuilderService, update_builder_service_1.UpdateBuilderService]
     })
 ], QueryBuilderModule);
 exports.QueryBuilderModule = QueryBuilderModule;

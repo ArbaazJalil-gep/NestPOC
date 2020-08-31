@@ -16,10 +16,21 @@ exports.QueryBuilderController = void 0;
 const common_1 = require("@nestjs/common");
 const constants_1 = require("../constants");
 const QueryBuilderService_1 = require("./QueryBuilderService");
+const update_builder_service_1 = require("./update-builder/update-builder.service");
+var mongo = require('mongodb');
+const BSON = require('bson');
+const { EJSON } = require('bson');
 let QueryBuilderController = class QueryBuilderController {
-    constructor(db, userService) {
+    constructor(db, aggregationBuilderService, updateBuilderService) {
         this.db = db;
-        this.userService = userService;
+        this.aggregationBuilderService = aggregationBuilderService;
+        this.updateBuilderService = updateBuilderService;
+    }
+    async execute(request, response) {
+        console.log(request.body);
+        const result = await this.db.collection("persons").aggregate(EJSON.deserialize(request.body)).toArray();
+        response.status(201);
+        response.send(result);
     }
     async create(request, response) {
         this.db.collection('users').insertOne(request.body, (err, result) => {
@@ -35,28 +46,39 @@ let QueryBuilderController = class QueryBuilderController {
     async get(query) {
         const schema = {
             type: 'get',
+            isMultiple: false,
             database: "person",
-            Pipes: [{
+            Pipes: [
+                {
                     type: "match",
                     query: [
                         "or",
-                        ["and", {
+                        [
+                            "and",
+                            {
                                 "Collection": "persons",
                                 "Property": "gender",
                                 "operator": "$eq",
-                                "operatorValue": ["female"]
+                                "operatorValue": [
+                                    "female"
+                                ]
                             },
                             {
                                 "Collection": "persons",
                                 "Property": "dob.age",
                                 "operator": "$gt",
-                                "operatorValue": ["$registered.age"]
-                            }],
+                                "operatorValue": [
+                                    "$registered.age"
+                                ]
+                            }
+                        ],
                         {
                             "Collection": "persons",
-                            "Property": "gender",
+                            "Property": "_id",
                             "operator": "$eq",
-                            "operatorValue": ["male"]
+                            "operatorValue": [
+                                "5f3258cfbaaccedaa5dd2d96"
+                            ]
                         }
                     ]
                 },
@@ -68,25 +90,76 @@ let QueryBuilderController = class QueryBuilderController {
                             "Collection": "persons",
                             "Property": "dob.age",
                             "operator": "$gte",
-                            "operatorValue": [60]
+                            "operatorValue": [
+                                60
+                            ]
                         }
                     ]
                 },
                 {
                     type: "project",
                     query: [
-                        { collection: "persons", key: "_id" },
-                        { collection: "persons", key: "name.first", alias: "fname" },
-                        { collection: "persons", key: "name.last", alias: "lname" },
-                        { collection: "persons", key: "gender", alias: "gender" },
-                        { collection: "persons", key: "dob.age", alias: "dobage" },
-                        { collection: "persons", key: "registered.age", alias: "registeredAge" },
-                        { collection: "persons", key: "location.coordinates.latitude", SpecialOps: { type: "Convert", args: { operator: "toInt" } }, alias: "lat" },
-                        { collection: "persons", key: "location.coordinates.longitude", SpecialOps: { type: "Convert", args: { operator: "toInt" } }, alias: "long" }
+                        {
+                            collection: "persons",
+                            key: "_id"
+                        },
+                        {
+                            collection: "persons",
+                            key: "name.first",
+                            alias: "fname"
+                        },
+                        {
+                            collection: "persons",
+                            key: "name.last",
+                            alias: "lname"
+                        },
+                        {
+                            collection: "persons",
+                            key: "gender",
+                            alias: "gender"
+                        },
+                        {
+                            collection: "persons",
+                            key: "dob.age",
+                            alias: "dobage"
+                        },
+                        {
+                            collection: "persons",
+                            key: "registered.age",
+                            alias: "registeredAge"
+                        },
+                        {
+                            collection: "persons",
+                            key: "location.coordinates.latitude",
+                            SpecialOps: {
+                                type: "Convert",
+                                args: {
+                                    operator: "toInt"
+                                }
+                            },
+                            alias: "lat"
+                        },
+                        {
+                            collection: "persons",
+                            key: "location.coordinates.longitude",
+                            SpecialOps: {
+                                type: "Convert",
+                                args: {
+                                    operator: "toInt"
+                                }
+                            },
+                            alias: "long"
+                        }
                     ]
-                }, {
+                },
+                {
                     type: "sort",
-                    query: [{ key: "name.first", value: 1 }]
+                    query: [
+                        {
+                            key: "name.first",
+                            value: 1
+                        }
+                    ]
                 },
                 {
                     type: "pagination",
@@ -98,7 +171,7 @@ let QueryBuilderController = class QueryBuilderController {
                 {
                     type: "join",
                     query: {
-                        from: "persondetails",
+                        from: "linedeatils",
                         localField: "_id",
                         foreignField: "personid",
                         as: "persondetail"
@@ -107,21 +180,76 @@ let QueryBuilderController = class QueryBuilderController {
                 {
                     type: "group",
                     query: {
-                        "_id": [{ collection: "persons", key: "dobage", alias: "dobAge" }, { collection: "persons", key: "gender", alias: "Gender" }],
-                        "accumulators": [{ alias: "total", accumulator: "sum", accumulatorValue: 1 }]
+                        "_id": [
+                            {
+                                collection: "persons",
+                                key: "dobage",
+                                alias: "dobAge"
+                            },
+                            {
+                                collection: "persons",
+                                key: "gender",
+                                alias: "Gender"
+                            }
+                        ],
+                        "accumulators": [
+                            {
+                                alias: "total",
+                                accumulator: "sum",
+                                accumulatorValue: 1
+                            }
+                        ],
+                        "$sum": 1
                     }
                 }
-            ],
+            ]
         };
         if (schema.type === 'get') {
-            var mquery = this.userService.aggregationBuilder(schema);
+            var mquery = this.aggregationBuilderService.aggregationBuilder(schema);
             console.clear();
             console.log(JSON.stringify(mquery));
+            var serialized = (EJSON.serialize(mquery));
+            console.log('----', serialized);
             const result = await this.db.collection("persons").aggregate(mquery).toArray();
+            return serialized;
+        }
+        if (schema.type === 'update' && !schema.isMultiple) {
+            let payload = {
+                criteria: { "phone": "23138213" },
+                data: {
+                    "nat": "DK4",
+                    "info.publisher": "44",
+                    "login.password": "up1"
+                }
+            };
+            var mquery = this.updateBuilderService.build(schema, payload);
+            console.log(JSON.stringify(mquery));
+            const result = await this.db.collection("persons").updateOne(...mquery);
+            var serialized = (EJSON.serialize(mquery));
             return result;
+        }
+        if (schema.type === 'update' && schema.isMultiple) {
+            let payload = {
+                criteria: { "phone": "23138213" },
+                data: [{
+                        "nat": "DK4",
+                        "info.publisher": "44",
+                        "login.password": "up1"
+                    }]
+            };
+            var mquery = this.updateBuilderService.build(schema, payload);
+            const result = await this.db.collection("persons").find(mquery).toArray();
+            return serialized;
         }
     }
 };
+__decorate([
+    common_1.Post("execute"),
+    __param(0, common_1.Req()), __param(1, common_1.Res()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object, Object]),
+    __metadata("design:returntype", Promise)
+], QueryBuilderController.prototype, "execute", null);
 __decorate([
     common_1.Post(),
     __param(0, common_1.Req()), __param(1, common_1.Res()),
@@ -139,7 +267,8 @@ __decorate([
 QueryBuilderController = __decorate([
     common_1.Controller('user'),
     __param(0, common_1.Inject(constants_1.MONGODB_PROVIDER)),
-    __metadata("design:paramtypes", [Object, QueryBuilderService_1.QueryBuilderService])
+    __metadata("design:paramtypes", [Object, QueryBuilderService_1.QueryBuilderService,
+        update_builder_service_1.UpdateBuilderService])
 ], QueryBuilderController);
 exports.QueryBuilderController = QueryBuilderController;
 //# sourceMappingURL=QueryBuilder.controller.js.map
